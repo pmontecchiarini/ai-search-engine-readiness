@@ -27,7 +27,11 @@ export default function AuditorHome() {
     setResults(null); 
     
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/audit?url=${encodeURIComponent(url)}&lang=${lang}`);
+      const response = await fetch(`http://127.0.0.1:8000/api/audit?url=${encodeURIComponent(url)}&lang=${lang}`, {
+        headers: {
+          'X-Internal-Audit-Token': 'your-secure-shared-secret-key' // Move to .env for production
+        }
+      });
       if (!response.ok) throw new Error('Backend error');
       const data = await response.json();
       setResults(data.results);
