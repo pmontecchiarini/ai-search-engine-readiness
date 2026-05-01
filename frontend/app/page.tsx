@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 interface AuditMetric {
   passed: boolean;
@@ -20,6 +20,24 @@ export default function AuditorHome() {
   const [url, setUrl] = useState('');
   const [results, setResults] = useState<AuditResults | null>(null);
   const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState(0);
+
+  // Simulated progress logic for a smoother UX
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (loading) {
+      setProgress(0);
+      interval = setInterval(() => {
+        setProgress((prev) => {
+          if (prev >= 90) return prev; // Hold at 90% until response arrives
+          return prev + Math.floor(Math.random() * 10) + 2;
+        });
+      }, 400);
+    } else {
+      setProgress(100);
+    }
+    return () => clearInterval(interval);
+  }, [loading]);
 
   const startAudit = async () => {
     if (!url) return;
@@ -27,9 +45,9 @@ export default function AuditorHome() {
     setResults(null); 
     
     try {
-      const response = await fetch(`http://127.0.0.1:8000/api/audit?url=${encodeURIComponent(url)}&lang=${lang}`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/audit?url=${encodeURIComponent(url)}&lang=${lang}`, {
         headers: {
-          'X-Internal-Audit-Token': 'your-secure-shared-secret-key' // Move to .env for production
+          'X-Internal-Audit-Token': process.env.NEXT_PUBLIC_INTERNAL_TOKEN || ''
         }
       });
       if (!response.ok) throw new Error('Backend error');
@@ -64,13 +82,13 @@ export default function AuditorHome() {
 
         {/* Semantic Header */}
         <header className="mb-12">
-          <h1 className="text-5xl font-extrabold tracking-tight mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400">
+          <h1 className="text-5xl text-center font-extrabold tracking-tight mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400">
             AI Search Engine Readiness Auditor
           </h1>
-          <p className="text-slate-400 text-lg">
+          <p className="text-slate-400 text-lg text-center">
             {lang === 'en' 
-              ? 'Technical utility for the 2026 Citation Economy.' 
-              : 'Utilidad técnica para la Economía de Citación 2026.'}
+              ? 'Scan your domain to see if it is optimized for discovery by AI agents like Perplexity and SearchGPT.' 
+              : 'Escanea tu dominio para ver si está optimizado para ser descubierto por agentes de IA como Perplexity y SearchGPT.'}
           </p>
         </header>
 
@@ -82,7 +100,7 @@ export default function AuditorHome() {
             value={url}
             onChange={(e) => setUrl(e.target.value)}
             onKeyDown={(e) => e.key === 'Enter' && startAudit()}
-            placeholder="https://nytimes.com"
+            placeholder="example.com"
             className="flex-1 bg-transparent p-4 rounded-xl outline-none text-white placeholder:text-slate-600 focus:ring-1 focus:ring-purple-500/50 transition-all"
           />
           <button 
@@ -94,7 +112,21 @@ export default function AuditorHome() {
             {loading ? '...' : (lang === 'en' ? 'Scan' : 'Escanear')}
           </button>
         </section>
-
+        {/* ADD THIS: Progress Bar Section */}
+        {loading && (
+          <div className="mb-12 animate-in fade-in duration-500">
+            <div className="flex justify-between mb-2 text-[10px] font-mono text-slate-500 uppercase tracking-widest">
+              <span>{lang === 'en' ? 'Analyzing technical markers' : 'Analizando marcadores técnicos'}</span>
+              <span>{progress}%</span>
+            </div>
+            <div className="w-full h-1.5 bg-slate-900 rounded-full overflow-hidden border border-slate-800">
+              <div 
+                className="h-full bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 transition-all duration-500 ease-out"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+          </div>
+        )}
         {/* Results Section */}
         {results && (
           <section className="grid gap-6 animate-in fade-in slide-in-from-bottom-4 duration-700" aria-label={lang === 'en' ? 'Audit results' : 'Resultados de la auditoría'}>
