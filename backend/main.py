@@ -9,6 +9,15 @@ from slowapi.errors import RateLimitExceeded
 
 from ai_search_engine_readiness import AISearchEngineReadiness
 from config import AUDIT_METRICS
+import os
+from dotenv import load_dotenv
+
+# Load variables from a .env file (for local development)
+load_dotenv()
+
+# Use os.getenv to fetch the values
+INTERNAL_TOKEN = os.getenv("INTERNAL_AUDIT_TOKEN", "default-fallback-key")
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
 
 # 1. Initialize Limiter
 limiter = Limiter(key_func=get_remote_address)
@@ -22,7 +31,7 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 origins = [
     "http://localhost:3000",       # Local development
     "http://127.0.0.1:3000",     # Local development alternative
-    # "https://your-domain.com",  # Add your production domain here
+    FRONTEND_URL  # Add your production domain here
 ]
 
 app.add_middleware(
