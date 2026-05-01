@@ -15,10 +15,13 @@ app.add_middleware(
 
 @app.get("/api/audit")
 async def audit(url: str, lang: str = "en"):
-    # Fix: Ensure protocol exists
-    clean_url = url.strip()
+    
+    clean_url = url.strip().lower()
+    
     if not clean_url.startswith(('http://', 'https://')):
         clean_url = f"https://{clean_url}"
+    
+    clean_url = clean_url.rstrip('/')
     
     auditor = AISearchEngineReadiness(clean_url)
     report = auditor.run_audit()
