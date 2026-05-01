@@ -53,7 +53,7 @@ def validate_public_url(url: str):
 # 5. Security: Internal Token Verification
 async def verify_internal_token(x_internal_audit_token: str = Header(None)):
     # In production, use os.getenv("INTERNAL_TOKEN")
-    if x_internal_audit_token != "your-secure-shared-secret-key":
+    if x_internal_audit_token != INTERNAL_TOKEN:
         raise HTTPException(status_code=403, detail="Unauthorized internal access")
     return x_internal_audit_token
 
