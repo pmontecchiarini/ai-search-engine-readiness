@@ -87,7 +87,7 @@ export default function AuditorHome() {
           </h1>
           <p className="text-slate-400 text-lg text-center">
             {lang === 'en' 
-              ? 'Scan your domain to see if it is optimized for discovery by AI agents like Perplexity and SearchGPT.' 
+              ? 'Scan your domain to see if your site is optimized for discovery by AI agents like Perplexity and SearchGPT.' 
               : 'Escanea tu dominio para ver si está optimizado para ser descubierto por agentes de IA como Perplexity y SearchGPT.'}
           </p>
         </header>
@@ -129,7 +129,7 @@ export default function AuditorHome() {
         )}
         {/* Results Section */}
         {results && (
-          <section className="grid gap-6 animate-in fade-in slide-in-from-bottom-4 duration-700" aria-label={lang === 'en' ? 'Audit results' : 'Resultados de la auditoría'}>
+          <section className="grid gap-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {Object.entries(results)
               .sort(([, a], [, b]) => {
                 const order: { [key: string]: number } = { CRITICAL: 0, HIGH: 1, MEDIUM: 2, LOW: 3 };
@@ -138,34 +138,51 @@ export default function AuditorHome() {
               .map(([key, metric]) => (
                 <article 
                   key={key} 
-                  className={`relative p-6 rounded-2xl bg-slate-900 border border-slate-800 transition-all hover:border-slate-700 shadow-2xl border-l-4 
-                    ${metric.passed ? 'border-l-green-500' : 
-                      metric.priority === 'CRITICAL' ? 'border-l-red-600' : 
-                      metric.priority === 'HIGH' ? 'border-l-orange-500' : 'border-l-blue-500'}`}
+                  className={`relative p-8 rounded-3xl bg-slate-900/80 border border-slate-800 transition-all hover:border-slate-700 shadow-2xl overflow-hidden
+                    ${metric.passed ? 'ring-1 ring-green-500/20' : 'ring-1 ring-red-500/10'}`}
                 >
-                  <div className="flex justify-between items-center mb-4">
-                    <span className={`text-[10px] font-black px-2 py-1 rounded-md uppercase tracking-widest ${
-                      metric.priority === 'CRITICAL' ? 'bg-red-500/10 text-red-500 border border-red-500/20' : 
-                      metric.priority === 'HIGH' ? 'bg-orange-500/10 text-orange-500 border border-orange-500/20' : 
-                      'bg-slate-800 text-slate-400'
+                  {/* Status Indicator (Top Right) */}
+                  <div className="absolute top-6 right-8">
+                    {metric.passed ? (
+                      <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-[10px] font-black uppercase tracking-wider">
+                        <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                        {lang === 'en' ? 'Optimized' : 'Optimizado'}
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-[10px] font-black uppercase tracking-wider">
+                        <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
+                        {lang === 'en' ? 'Action Required' : 'Acción Requerida'}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Priority Badge */}
+                  <div className="mb-4">
+                    <span className={`text-[9px] font-black px-2 py-0.5 rounded-md uppercase tracking-[0.15em] border ${
+                      metric.priority === 'CRITICAL' ? 'bg-red-500/10 text-red-500 border-red-500/20' : 
+                      metric.priority === 'HIGH' ? 'bg-orange-500/10 text-orange-500 border-orange-500/20' : 
+                      'bg-slate-800 text-slate-400 border-slate-700'
                     }`}>
                       {metric.priority}
                     </span>
-                    <span className="text-xl" aria-hidden="true">{metric.passed ? '✨' : '⚠️'}</span>
                   </div>
 
-                  <h3 className="text-xl font-bold text-slate-100 mb-2">{metric.title}</h3>
-                  <p className="text-slate-400 text-sm leading-relaxed mb-4">{metric.description}</p>
+                  <h3 className="text-2xl font-bold text-white mb-3 max-w-[80%]">{metric.title}</h3>
+                  <p className="text-slate-400 text-sm leading-relaxed mb-6">{metric.description}</p>
 
                   {!metric.passed && (
-                    <div className="mt-4 grid gap-4 p-4 rounded-xl bg-slate-950/50 border border-slate-800/50">
-                      <div>
-                        <strong className="block text-[10px] font-bold text-red-400 uppercase mb-1">{lang === 'en' ? 'Risk' : 'Riesgo'}</strong>
-                        <p className="text-sm text-slate-300">{metric.impact_if_false}</p>
+                    <div className="space-y-4 pt-6 border-t border-slate-800">
+                      <div className="flex flex-col gap-1">
+                        <span className="text-[10px] font-bold text-red-400 uppercase tracking-widest">
+                          {lang === 'en' ? 'Risk Assessment' : 'Evaluación de Riesgo'}
+                        </span>
+                        <p className="text-sm text-slate-300 italic">{metric.impact_if_false}</p>
                       </div>
-                      <div className="pt-3 border-t border-slate-800">
-                        <strong className="block text-[10px] font-bold text-blue-400 uppercase mb-1">{lang === 'en' ? 'Recommendation' : 'Recomendación'}</strong>
-                        <p className="text-sm text-slate-300 italic">{metric.recommendation}</p>
+                      <div className="flex flex-col gap-1 p-4 rounded-xl bg-blue-500/5 border border-blue-500/10">
+                        <span className="text-[10px] font-bold text-blue-400 uppercase tracking-widest">
+                          {lang === 'en' ? 'Technical Recommendation' : 'Recomendación Técnica'}
+                        </span>
+                        <p className="text-sm text-blue-100 font-medium">{metric.recommendation}</p>
                       </div>
                     </div>
                   )}
@@ -173,6 +190,18 @@ export default function AuditorHome() {
               ))}
           </section>
         )}
+
+        {/* Legal Disclaimer Section */}
+        <section className="mt-16 p-6 rounded-2xl bg-slate-900/30 border border-slate-800/50 text-slate-500">
+          <h2 className="text-[10px] font-bold uppercase tracking-[0.2em] mb-4 text-slate-400">
+            {lang === 'en' ? 'Legal Disclaimer' : 'Aviso Legal'}
+          </h2>
+          <p className="text-xs leading-relaxed">
+            {lang === 'en' 
+              ? "This report is provided for informational and research purposes only. The 'AI Search Engine Readiness Auditor' is an experimental technical utility. Its findings do not constitute professional legal, technical, or financial advice. We make no guarantees regarding the accuracy of the audit or its impact on search engine rankings, and we assume no liability for any actions taken based on this data."
+              : "Este informe se proporciona únicamente con fines informativos y de investigación. El 'Auditor de Preparación para Motores de Búsqueda de IA' es una utilidad técnica experimental. Sus hallazgos no constituyen asesoramiento legal, técnico o financiero profesional. No garantizamos la exactitud de la auditoría ni su impacto en el posicionamiento en buscadores, y no asumimos ninguna responsabilidad por las acciones tomadas basadas en estos datos."}
+          </p>
+        </section>
       </main>
 
       {/* Semantic Footer */}

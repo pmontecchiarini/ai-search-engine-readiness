@@ -201,7 +201,9 @@ class AISearchEngineReadiness:
             print("-" * 40)
 
     def run_audit(self, lang="en"):
-        print(f"--- Auditing: {self.url} ---")
+        print(f"\n============================================================")
+        print(f"AI READINESS AUDIT: {self.url} ({lang.upper()})")
+        print(f"============================================================\n")
         if self.fetch_homepage():
             self.check_llms_txt()
             self.check_llms_txt_quality()
@@ -215,7 +217,7 @@ class AISearchEngineReadiness:
             self.check_waf_protection()
         
         # Pass the language here too
-        self.generate_report(lang)
+        self.generate_report(lang=lang)
         return self.report
 
 if __name__ == "__main__":
