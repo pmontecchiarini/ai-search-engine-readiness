@@ -1,5 +1,5 @@
 'use client';
-
+import { AUDIT_METRICS_DATA } from '@/constants/metrics';
 import { useEffect, useState } from 'react';
 
 interface AuditMetric {
@@ -131,63 +131,75 @@ export default function AuditorHome() {
         {results && (
           <section className="grid gap-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
             {Object.entries(results)
-              .sort(([, a], [, b]) => {
+              .sort(([keyA], [keyB]) => {
+                // Obtenemos la prioridad desde el objeto de referencia (usando 'en' como base)
                 const order: { [key: string]: number } = { CRITICAL: 0, HIGH: 1, MEDIUM: 2, LOW: 3 };
-                return (order[a.priority] ?? 99) - (order[b.priority] ?? 99);
+                const priorityA = AUDIT_METRICS_DATA["en"][keyA]?.priority ?? "LOW";
+                const priorityB = AUDIT_METRICS_DATA["en"][keyB]?.priority ?? "LOW";
+                return (order[priorityA] ?? 99) - (order[priorityB] ?? 99);
               })
-              .map(([key, metric]) => (
-                <article 
-                  key={key} 
-                  className={`relative p-8 rounded-3xl bg-slate-900/80 border border-slate-800 transition-all hover:border-slate-700 shadow-2xl overflow-hidden
-                    ${metric.passed ? 'ring-1 ring-green-500/20' : 'ring-1 ring-red-500/10'}`}
-                >
-                  {/* Status Indicator (Top Right) */}
-                  <div className="absolute top-6 right-8">
-                    {metric.passed ? (
-                      <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-[10px] font-black uppercase tracking-wider">
-                        <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                        {lang === 'en' ? 'Optimized' : 'Optimizado'}
-                      </span>
-                    ) : (
-                      <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-[10px] font-black uppercase tracking-wider">
-                        <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
-                        {lang === 'en' ? 'Action Required' : 'Acción Requerida'}
-                      </span>
-                    )}
-                  </div>
+              .map(([key, passed]) => {
+                // 'passed' es el booleano que viene del backend
+                const content = AUDIT_METRICS_DATA[lang][key];
+                const priority = AUDIT_METRICS_DATA["en"][key]?.priority ?? "LOW";
 
-                  {/* Priority Badge */}
-                  <div className="mb-4">
-                    <span className={`text-[9px] font-black px-2 py-0.5 rounded-md uppercase tracking-[0.15em] border ${
-                      metric.priority === 'CRITICAL' ? 'bg-red-500/10 text-red-500 border-red-500/20' : 
-                      metric.priority === 'HIGH' ? 'bg-orange-500/10 text-orange-500 border-orange-500/20' : 
-                      'bg-slate-800 text-slate-400 border-slate-700'
-                    }`}>
-                      {metric.priority}
-                    </span>
-                  </div>
+                // Si por alguna razón la clave no existe en nuestro diccionario, no renderizamos
+                if (!content) return null;
 
-                  <h3 className="text-2xl font-bold text-white mb-3 max-w-[80%]">{metric.title}</h3>
-                  <p className="text-slate-400 text-sm leading-relaxed mb-6">{metric.description}</p>
-
-                  {!metric.passed && (
-                    <div className="space-y-4 pt-6 border-t border-slate-800">
-                      <div className="flex flex-col gap-1">
-                        <span className="text-[10px] font-bold text-red-400 uppercase tracking-widest">
-                          {lang === 'en' ? 'Risk Assessment' : 'Evaluación de Riesgo'}
+                return (
+                  <article 
+                    key={key} 
+                    className={`relative p-8 rounded-3xl bg-slate-900/80 border border-slate-800 transition-all hover:border-slate-700 shadow-2xl overflow-hidden
+                      ${passed ? 'ring-1 ring-green-500/20' : 'ring-1 ring-red-500/10'}`}
+                  >
+                    {/* Status Indicator (Top Right) */}
+                    <div className="absolute top-6 right-8">
+                      {passed ? (
+                        <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-[10px] font-black uppercase tracking-wider">
+                          <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                          {lang === 'en' ? 'Optimized' : 'Optimizado'}
                         </span>
-                        <p className="text-sm text-slate-300 italic">{metric.impact_if_false}</p>
-                      </div>
-                      <div className="flex flex-col gap-1 p-4 rounded-xl bg-blue-500/5 border border-blue-500/10">
-                        <span className="text-[10px] font-bold text-blue-400 uppercase tracking-widest">
-                          {lang === 'en' ? 'Technical Recommendation' : 'Recomendación Técnica'}
+                      ) : (
+                        <span className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-[10px] font-black uppercase tracking-wider">
+                          <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
+                          {lang === 'en' ? 'Action Required' : 'Acción Requerida'}
                         </span>
-                        <p className="text-sm text-blue-100 font-medium">{metric.recommendation}</p>
-                      </div>
+                      )}
                     </div>
-                  )}
-                </article>
-              ))}
+
+                    {/* Priority Badge */}
+                    <div className="mb-4">
+                      <span className={`text-[9px] font-black px-2 py-0.5 rounded-md uppercase tracking-[0.15em] border ${
+                        priority === 'CRITICAL' ? 'bg-red-500/10 text-red-500 border-red-500/20' : 
+                        priority === 'HIGH' ? 'bg-orange-500/10 text-orange-500 border-orange-500/20' : 
+                        'bg-slate-800 text-slate-400 border-slate-700'
+                      }`}>
+                        {priority}
+                      </span>
+                    </div>
+
+                    <h3 className="text-2xl font-bold text-white mb-3 max-w-[80%]">{content.title}</h3>
+                    <p className="text-slate-400 text-sm leading-relaxed mb-6">{content.description}</p>
+
+                    {!passed && (
+                      <div className="space-y-4 pt-6 border-t border-slate-800">
+                        <div className="flex flex-col gap-1">
+                          <span className="text-[10px] font-bold text-red-400 uppercase tracking-widest">
+                            {lang === 'en' ? 'Risk Assessment' : 'Evaluación de Riesgo'}
+                          </span>
+                          <p className="text-sm text-slate-300 italic">{content.impact_if_false}</p>
+                        </div>
+                        <div className="flex flex-col gap-1 p-4 rounded-xl bg-blue-500/5 border border-blue-500/10">
+                          <span className="text-[10px] font-bold text-blue-400 uppercase tracking-widest">
+                            {lang === 'en' ? 'Technical Recommendation' : 'Recomendación Técnica'}
+                          </span>
+                          <p className="text-sm text-blue-100 font-medium">{content.recommendation}</p>
+                        </div>
+                      </div>
+                    )}
+                  </article>
+                );
+              })}
           </section>
         )}
 
