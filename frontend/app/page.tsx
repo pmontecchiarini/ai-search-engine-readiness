@@ -121,11 +121,39 @@ export default function AuditorHome() {
                     <h3 className="text-2xl font-bold text-white mb-3">{content.title}</h3>
                     <p className="text-slate-400 text-sm mb-6">{content.description}</p>
                     {!passed && (
-                      <div className="space-y-4 pt-6 border-t border-slate-800">
-                        <p className="text-sm text-slate-300 italic"><span className="text-red-400 font-bold uppercase text-[10px] block">Risk</span>{content.impact_if_false}</p>
-                        <p className="text-sm text-blue-100 font-medium p-4 rounded-xl bg-blue-500/5 border border-blue-500/10"><span className="text-blue-400 font-bold uppercase text-[10px] block">Recommendation</span>{content.recommendation}</p>
-                      </div>
-                    )}
+  <div className="space-y-4 pt-6 border-t border-slate-800">
+    {/* Risk Section */}
+    <div className="flex flex-col gap-1">
+      <span className="text-[10px] font-bold text-red-400 uppercase tracking-widest block">
+        {lang === 'en' ? 'Risk Assessment' : 'Evaluación de Riesgo'}
+      </span>
+      <p className="text-sm text-slate-300">{content.impact_if_false}</p>
+    </div>
+
+    {/* Recommendation Section */}
+    <div className="flex flex-col gap-1 p-4 rounded-xl bg-blue-500/5 border border-blue-500/10">
+      <span className="text-[10px] font-bold text-blue-400 uppercase tracking-widest block mb-2">
+        {lang === 'en' ? 'Technical Recommendation' : 'Recomendación Técnica'}
+      </span>
+
+          {/* Check if it's an array of many steps or a single string */}
+          {Array.isArray(content.recommendation) ? (
+            <ul className="space-y-3">
+              {content.recommendation.map((step: string, index: number) => (
+                <li key={index} className="flex gap-3 text-sm text-blue-100 font-medium leading-relaxed">
+                  <span className="text-blue-500 font-bold">•</span>
+                  <span>{step}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-sm text-blue-100 font-medium leading-relaxed">
+              {content.recommendation}
+            </p>
+          )}
+        </div>
+      </div>
+    )}
                   </article>
                 );
               })}
