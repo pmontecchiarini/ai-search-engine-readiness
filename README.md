@@ -23,13 +23,15 @@ The project is built as a monorepo:
 ### Backend
 1. `cd backend`
 2. `python -m venv venv && source venv/bin/activate`
-3. `pip install fastapi uvicorn requests beautifulsoup4`
-4. `uvicorn main:app --reload`
+3. `pip install -r requirements.txt`
+4. Create a `.env` file with `INTERNAL_AUDIT_TOKEN` and `FRONTEND_URL`.
+5. `uvicorn main:app --reload`
 
 ### Frontend
 1. `cd frontend`
 2. `npm install`
-3. `npm run dev`
+3. Create a `.env.local` with `NEXT_PUBLIC_BACKEND_URL` and `NEXT_PUBLIC_INTERNAL_TOKEN`.
+4. `npm run dev`
 
 ## License & Copyright
 **Copyright (c) 2026 Patricia Montecchiarini.**
