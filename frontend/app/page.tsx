@@ -71,6 +71,11 @@ export default function AuditorHome() {
         {/* Header */}
         <header className="mb-12 text-center">
           <h1 className="text-5xl font-extrabold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-pink-400">AI Readiness Auditor</h1>
+          <p className="text-slate-400 text-lg text-center">
+            {lang === 'en' 
+              ? 'Scan your domain to see if your site is optimized for discovery by AI agents like Perplexity and SearchGPT.' 
+              : 'Escanea tu dominio para ver si está optimizado para ser descubierto por agentes de IA como Perplexity y SearchGPT.'}
+          </p>
         </header>
         {/* Input Section */}
         <section className="flex gap-3 mb-16 p-2 bg-slate-900/50 border border-slate-800 rounded-2xl">
@@ -173,7 +178,7 @@ export default function AuditorHome() {
       </main>
 
       <footer className="max-w-4xl mx-auto w-full py-12 mt-12 border-t border-slate-900 text-center text-slate-600 text-xs">
-        <p>© 2026 PM. {lang === 'en' ? 'All rights reserved.' : 'Todos los derechos reservados.'}</p>
+        <p>© 2026 Patricia Montecchiarini. {lang === 'en' ? 'All rights reserved.' : 'Todos los derechos reservados.'}</p>
       </footer>
     </div>
   );
