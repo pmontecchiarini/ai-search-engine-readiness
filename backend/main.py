@@ -72,7 +72,6 @@ async def verify_internal_token(x_internal_audit_token: str = Header(None)):
 async def audit(
     request: Request, 
     url: str, 
-    lang: str = "en", 
     token: str = Depends(verify_internal_token)
 ):
     # --- Input Sanitization ---
@@ -92,19 +91,9 @@ async def audit(
     try:
         auditor = AISearchEngineReadiness(clean_url)
         # Ensure the auditor class handles the language parameter correctly internally
-        report = auditor.run_audit(lang=lang)
-        
-        translations = AUDIT_METRICS.get(lang, AUDIT_METRICS["en"])
-        
-        detailed_results = {}
-        for key, passed in report.get("checks", {}).items():
-            if key in translations:
-                detailed_results[key] = {
-                    "passed": passed,
-                    **translations[key]
-                }
-        
-        return {"url": clean_url, "results": detailed_results}
+        report = auditor.run_audit()
+                        
+        return {"url": clean_url, "results": report}
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Audit execution error: {str(e)}")

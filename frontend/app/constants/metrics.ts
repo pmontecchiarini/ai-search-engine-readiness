@@ -1,5 +1,18 @@
 // src/constants/metrics.ts
-export const AUDIT_METRICS_DATA = {
+interface MetricContent {
+  title: string;
+  priority: string;
+  description: string;
+  impact_if_false: string;
+  recommendation: string | string[]; // Matches your current structure
+}
+
+
+export const AUDIT_METRICS_DATA: {
+        [lang: string]: {
+        [key: string]: MetricContent;
+    };
+    } = {
     "en": {
         "llms_txt": {
             "title": "AI Discovery Readiness (/llms.txt)",
