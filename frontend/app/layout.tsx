@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AI - SERA",
+  title: "GEO Readiness Auditor.",
   description: "AI Search Engine Readiness Auditor",
 };
 

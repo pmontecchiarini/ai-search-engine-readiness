@@ -70,11 +70,11 @@ export default function AuditorHome() {
         </nav>
         {/* Header */}
         <header className="mb-12 text-center">
-          <h1 className="text-5xl font-extrabold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-pink-400">AI Readiness Auditor</h1>
+          <h1 className="text-5xl font-extrabold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-pink-400">GEO Readiness Auditor</h1>
           <p className="text-slate-400 text-lg text-center">
             {lang === 'en' 
-              ? 'Scan your domain to see if your site is optimized for discovery by AI agents like Perplexity and SearchGPT.' 
-              : 'Escanea tu dominio para ver si está optimizado para ser descubierto por agentes de IA como Perplexity y SearchGPT.'}
+              ? 'AI search engines like Perplexity and SearchGPT are replacing traditional Google searches. If your site isn\'t optimized for AI discovery, your business becomes invisible. Scan your domain in seconds to find out where you stand.' 
+              : 'Los motores de búsqueda con IA como Perplexity y SearchGPT están reemplazando las búsquedas tradicionales de Google. Si tu sitio no está optimizado para ser descubierto por IA, tu negocio se vuelve invisible. Escaneá tu dominio en segundos para saber dónde estás parado.'}
           </p>
         </header>
         {/* Input Section */}
