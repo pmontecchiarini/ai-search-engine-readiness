@@ -80,7 +80,7 @@ function ScoreHero({ score, lang }: { score: number; lang: Lang }) {
           <span className="text-slate-500 text-xs font-mono mt-1">/ 100</span>
         </div>
       </div>
-      <h2 className="mt-6 text-[11px] font-black uppercase tracking-[0.3em] text-slate-400">
+      <h2 className="mt-6 text-[11px] font-mono font-black uppercase tracking-[0.3em] text-slate-400">
         {lang === 'en' ? 'AI Readiness Score' : 'Puntuación de Preparación IA'}
       </h2>
       <p className="mt-3 max-w-md text-sm text-slate-400">{verdict}</p>
@@ -192,7 +192,7 @@ function CheckCard({
           {priority}
         </span>
       </div>
-      <h3 className="text-2xl font-bold text-white mb-3 pr-28">{titleOverride ?? content.title}</h3>
+      <h3 className="text-2xl font-mono font-bold text-white mb-3 pr-28">{titleOverride ?? content.title}</h3>
       <p className="text-slate-400 text-sm mb-6">{content.description}</p>
 
       {showDetails && (
@@ -243,7 +243,7 @@ function PhaseHeader({ variant, lang }: { variant: Variant; lang: Lang }) {
       <span className="text-[10px] uppercase tracking-[0.3em] text-amber-300 italic">
         {en ? 'Phase 02 · Strategy' : 'Fase 02 · Estrategia'}
       </span>
-      <h2 className="text-2xl font-bold text-white mt-1">
+      <h2 className="text-2xl font-mono font-bold text-white mt-1">
         {en ? 'Content Optimization' : 'Optimización de Contenido'}
       </h2>
       <p className="text-slate-500 text-sm mt-1">
@@ -361,7 +361,7 @@ export default function AuditorHome() {
         </nav>
         {/* Header */}
         <header className="mb-12 text-center">
-          <h1 className="text-5xl font-extrabold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-pink-400">GEO Readiness Auditor</h1>
+          <h1 className="text-5xl font-mono font-extrabold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-pink-400">GEO Readiness Auditor</h1>
           <p className="text-slate-400 text-lg text-center">
             {lang === 'en'
               ? 'AI search engines like Perplexity and SearchGPT are replacing traditional Google searches. If your site isn\'t optimized for AI discovery, your business becomes invisible. Scan your domain in seconds to find out where you stand.'
@@ -423,7 +423,7 @@ export default function AuditorHome() {
         )}
         {/* Disclaimer */}
         <section className="mt-16 p-6 rounded-2xl bg-slate-900/30 border border-slate-800/50 text-slate-500">
-          <h2 className="text-[10px] font-bold uppercase tracking-[0.2em] mb-4 text-slate-400">
+          <h2 className="text-[10px] font-mono font-bold uppercase tracking-[0.2em] mb-4 text-slate-400">
             {lang === 'en' ? 'Legal Disclaimer' : 'Aviso Legal'}
           </h2>
           <p className="text-xs leading-relaxed">
