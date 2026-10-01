@@ -7,7 +7,7 @@ This auditor performs a multi-point inspection of a target URL to assess its rea
 
 ## Technical Structure
 The project is built as a monorepo:
-* **Frontend:** Next.js 15 (TypeScript, Tailwind CSS)
+* **Frontend:** Next.js 16 (React 19, TypeScript, Tailwind CSS v4)
 * **Backend:** FastAPI (Python 3.13)
 * **Logic Engine:** BeautifulSoup4, Requests, and Urllib RobotParser
 
@@ -32,6 +32,12 @@ The project is built as a monorepo:
 2. `npm install`
 3. Create a `.env.local` with `NEXT_PUBLIC_BACKEND_URL` and `NEXT_PUBLIC_INTERNAL_TOKEN`.
 4. `npm run dev`
+
+## About
+
+Built by **Patricia Montecchiarini**.
+
+[LinkedIn](https://www.linkedin.com/in/pmontecchiarini)
 
 ## License & Copyright
 **Copyright (c) 2026 Patricia Montecchiarini.**

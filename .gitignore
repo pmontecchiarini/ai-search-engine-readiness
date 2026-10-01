@@ -24,3 +24,6 @@ yarn-error.log*
 
 # Mac specific
 .DS_Store
+
+# Local AI assistant instructions (not for public repo)
+CLAUDE.md
