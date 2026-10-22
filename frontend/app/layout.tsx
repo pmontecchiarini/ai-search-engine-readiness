@@ -12,9 +12,28 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const TITLE = "GEO Readiness Auditor";
+const DESCRIPTION =
+  "Scan your website in seconds to see how ready it is for AI search engines like ChatGPT and Perplexity — free, no signup.";
+
+// Set NEXT_PUBLIC_SITE_URL to your real domain once deployed, so shared links
+// resolve the OG image to an absolute URL instead of localhost.
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+
 export const metadata: Metadata = {
-  title: "GEO Readiness Auditor.",
-  description: "AI Search Engine Readiness Auditor",
+  metadataBase: new URL(SITE_URL),
+  title: TITLE,
+  description: DESCRIPTION,
+  openGraph: {
+    title: TITLE,
+    description: DESCRIPTION,
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: TITLE,
+    description: DESCRIPTION,
+  },
 };
 
 export default function RootLayout({

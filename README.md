@@ -6,31 +6,24 @@ A technical utility designed to evaluate how effectively a web domain communicat
 This auditor performs a multi-point inspection of a target URL to assess its readiness for discovery by LLMs (Large Language Models) and AI-native search engines. It categorizes technical markers into four priority levels: Critical, High, Medium, and Low.
 
 ## Technical Structure
-The project is built as a monorepo:
-* **Frontend:** Next.js 16 (React 19, TypeScript, Tailwind CSS v4)
-* **Backend:** FastAPI (Python 3.13)
-* **Logic Engine:** BeautifulSoup4, Requests, and Urllib RobotParser
+A single Next.js app, deployable on its own (e.g. Vercel) with no separate backend:
+* **App:** Next.js 16 (React 19, TypeScript, Tailwind CSS v4)
+* **Audit engine:** a Route Handler (`/api/audit`) using `cheerio` for HTML parsing
+* **Rate limiting:** Upstash Redis (per-IP, protects the audit endpoint from abuse)
 
 ## Core Audit Features
-*   **Discovery Readiness:** Scans for `/llms.txt` implementation.
+*   **Discovery Readiness:** Scans for `/llms.txt` implementation and quality.
 *   **Structured Authority:** Validates JSON-LD for E-E-A-T entity linking.
-*   **AI Governance:** Audits `robots.txt` for AI-specific agent directives.
-*   **Token Efficiency:** Measures signal-to-noise ratio and structural density.
-*   **GEO Triggers:** Identifies expert attribution and citation signals.
+*   **AI Governance:** Audits `robots.txt` for AI-specific agent directives, including crawl-rate limits.
+*   **Security Policy:** Checks for a Content-Security-Policy header.
+*   **Token Efficiency:** Measures the ratio of real content to markup/script clutter.
+*   **GEO Triggers:** Identifies expert attribution and citation signals, in English and Spanish.
 
 ## Installation
 
-### Backend
-1. `cd backend`
-2. `python -m venv venv && source venv/bin/activate`
-3. `pip install -r requirements.txt`
-4. Create a `.env` file with `INTERNAL_AUDIT_TOKEN` and `FRONTEND_URL`.
-5. `uvicorn main:app --reload`
-
-### Frontend
 1. `cd frontend`
 2. `npm install`
-3. Create a `.env.local` with `NEXT_PUBLIC_BACKEND_URL` and `NEXT_PUBLIC_INTERNAL_TOKEN`.
+3. Create a `.env` file with `UPSTASH_REDIS_REST_URL` and `UPSTASH_REDIS_REST_TOKEN` (free tier at [upstash.com](https://upstash.com)).
 4. `npm run dev`
 
 ## About
