@@ -1,34 +1,18 @@
 // src/constants/phases.ts
-// Presentational grouping + scoring for the results view.
-// The backend returns a flat { [key: string]: boolean } map of 10 checks.
-// These constants slot each check into a strategic "phase" and compute a
-// priority-weighted global readiness score. No backend change is involved.
+// Presentational ordering + scoring for the results view.
+// The backend returns a flat { [key: string]: boolean } map of 6 checks.
+// These constants order the checks for display and compute a priority-
+// weighted global readiness score. No backend change is involved.
 
 import { AUDIT_METRICS_DATA } from './metrics';
+import type { MetricSet, AuditResults } from './types';
 
-interface MetricContent {
-  title: string;
-  priority: string;
-  description: string;
-  impact_if_false: string;
-  recommendation: string | string[];
-}
-
-type MetricSet = Record<string, MetricContent>;
-type AuditResults = Record<string, boolean>;
-
-// The two /llms.txt backend checks are merged into a single "AI Agent Map" card.
+// The two /llms.txt checks are merged into a single "AI Agent Map" card.
 export const LLMS_TXT_KEYS = ['llms_txt', 'llms_txt_quality'] as const;
 
-// Phase 1 — Code & Governance (Quick Wins). The literal 'llms_txt' entry is the
-// anchor for the merged /llms.txt card (llms_txt_quality is folded into it in the UI).
-export const PHASE_1_KEYS = ['json_ld', 'security_headers', 'llms_txt', 'ai_governance'] as const;
-
-// Phase 2 — Content Optimization (Ongoing Strategy).
-export const PHASE_2_KEYS = ['citation_triggers', 'geo_optimized', 'token_efficiency'] as const;
-
-// Orphan technical checks, shown collapsed in an "Additional Technical Checks" section.
-export const ADDITIONAL_KEYS = ['bot_verification_ready', 'crawl_maturity'] as const;
+// Display order for the checks grid. The literal 'llms_txt' entry is the
+// anchor for the merged /llms.txt card (llms_txt_quality folds into it in the UI).
+export const CHECK_ORDER = ['json_ld', 'security_headers', 'llms_txt', 'ai_governance', 'crawl_maturity'] as const;
 
 // Priority weights. Keyed off the ENGLISH priority strings only, so scoring is
 // language-independent (the ES set uses translated strings like "CRITICO").
@@ -74,4 +58,17 @@ export function scoreColorClasses(score: number): ScoreBand {
   if (score < 50) return { ring: 'stroke-red-500', text: 'text-red-400', band: 'red' };
   if (score < 80) return { ring: 'stroke-amber-400', text: 'text-amber-300', band: 'yellow' };
   return { ring: 'stroke-green-500', text: 'text-green-400', band: 'green' };
+}
+
+/**
+ * Up to 3 failed CRITICAL/HIGH-priority checks, ranked by priority weight.
+ * Deliberately excludes MEDIUM/LOW checks even if that leaves fewer than 3 (or
+ * none) — this is a triage list for what matters most, not a quota to fill.
+ */
+export function topPriorityKeys(results: AuditResults, max = 3): string[] {
+  return Object.entries(results)
+    .filter(([key, passed]) => !passed && (PRIORITY_WEIGHTS[priorityFor(key)] ?? 1) >= PRIORITY_WEIGHTS.HIGH)
+    .sort(([keyA], [keyB]) => (PRIORITY_WEIGHTS[priorityFor(keyB)] ?? 1) - (PRIORITY_WEIGHTS[priorityFor(keyA)] ?? 1))
+    .slice(0, max)
+    .map(([key]) => key);
 }
